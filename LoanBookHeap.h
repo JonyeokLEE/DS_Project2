@@ -1,11 +1,13 @@
 #pragma once
 #include "LoanBookData.h"
 #include "LoanBookHeapNode.h"
+#include <vector>
 
 class LoanBookHeap
 {
 private:
     LoanBookHeapNode* root;
+    vector<LoanBookHeapNode*> LevelOrder;
 
 public:
     LoanBookHeap() {

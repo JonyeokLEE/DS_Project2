@@ -13,6 +13,7 @@ private:
     SelectionTreeNode* pParent;
     LoanBookHeap* hRoot;
 
+
 public:
     SelectionTreeNode() {
         this->pData = NULL;
