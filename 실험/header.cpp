@@ -76,6 +76,7 @@ bool SelectionTree::Insert(LoanBookData* newData) {
     if (entered)
     {
         selvector.at(location)->getHeap()->Insert(newData);
+        selvector.at(location)->setBookData(selvector.at(location)->getHeap()->getRoot()->getBookData());
     }
     else
     {
@@ -83,6 +84,7 @@ bool SelectionTree::Insert(LoanBookData* newData) {
         LoanBookHeap* newHeap = new LoanBookHeap();
         selvector.at(enteredRun)->setHeap(newHeap);
         newHeap->Insert(newData);
+        selvector.at(enteredRun)->setBookData(selvector.at(enteredRun)->getHeap()->getRoot()->getBookData());
     }
     SelectionUp();
     return true;
@@ -142,6 +144,31 @@ void SelectionTree::vectorPrint()
     for (int i = 1; i < selvector.size(); i++)
     {
         cout << selvector.at(i)->getBookData()->getName() << " ";
+    }
+}
+void SelectionTree::vectorPrintEach(int code)
+{
+    bool entered = false;
+    int location;
+    for (int i = 8; i < 16; i++)
+    {
+        if (selvector.at(i)->getHeap() == nullptr)
+            break;
+        if (code == selvector.at(i)->getHeap()->getRoot()->getBookData()->getCode())
+        {
+            entered = true;
+            location = i;
+        }
+    }
+    if (entered)
+    {
+        cout << "Code " << code << ": ";
+        selvector.at(location)->getHeap()->LevelOrderPrint();
+        cout << endl;
+    }
+    else
+    {
+        cout << "No Entered\n";
     }
 }
 /*

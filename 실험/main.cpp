@@ -1,37 +1,36 @@
 #include "header.h"
 
 int main() {
-    LoanBookHeap heap;
     SelectionTree sel;
     sel.settingSelection();
     // Create and insert book data into the heap
     LoanBookData book1;
-    book1.setBookData("Q", 100, "Author 1", 2023);
+    book1.setBookData("Q", 000, "Author 1", 2023);
     sel.Insert(&book1);
 
     LoanBookData book2;
-    book2.setBookData("F", 100, "Author 2", 2023);
+    book2.setBookData("F", 200, "Author 2", 2023);
     sel.Insert(&book2);
 
     LoanBookData book3;
-    book3.setBookData("D", 200, "Author 3", 2023);
+    book3.setBookData("D", 300, "Author 3", 2023);
     sel.Insert(&book3);
 
     LoanBookData book4;
-    book4.setBookData("C", 300, "Author 4", 2023);
+    book4.setBookData("C", 400, "Author 4", 2023);
     sel.Insert(&book4);
 
     LoanBookData book5;
-    book5.setBookData("A", 400, "Author 5", 2023);
+    book5.setBookData("A", 500, "Author 5", 2023);
     sel.Insert(&book5);
 
     
     LoanBookData book6;
-    book6.setBookData("Z", 400, "Author 1", 2023);
+    book6.setBookData("T", 700, "Author 1", 2023);
     sel.Insert(&book6);
 
     LoanBookData book7;
-    book7.setBookData("T", 500, "Author 2", 2023);
+    book7.setBookData("Z", 500, "Author 2", 2023);
     sel.Insert(&book7);
 
     LoanBookData book8;
@@ -50,7 +49,16 @@ int main() {
     sel.Insert(&book11);
 
     //sel.LevelOrderPrint();
-    sel.vectorPrint();
+    sel.vectorPrintEach(000);
+    sel.vectorPrintEach(100);
+    sel.vectorPrintEach(200);
+    sel.vectorPrintEach(300);
+    sel.vectorPrintEach(400);
+    sel.vectorPrintEach(500);
+    sel.vectorPrintEach(600);
+    sel.vectorPrintEach(700);
+
+    sel.LevelOrderPrint();
     
     
     return 0;
