@@ -36,20 +36,15 @@ public:
     LoanBookHeapNode* deepCopy(LoanBookHeapNode* root) {
         if (root == NULL) return nullptr;
 
-        //LoanBookHeapNode* copy = new LoanBookHeapNode();
-        //copy->getLeftChild() = deepCopy(root->getLeftChild());
-        //copy->getRightChild() = deepCopy(root->getLeftChild());
-
         LoanBookHeapNode* copy = new LoanBookHeapNode();
+        copy->setLeftChild(deepCopy(root->getLeftChild()));
+        copy->setRightChild(deepCopy(root->getRightChild()));
+
+        
         copy->getBookData()->setName(root->getBookData()->getName());
         copy->getBookData()->setCode(root->getBookData()->getCode());
         copy->getBookData()->setAuthor(root->getBookData()->getAuthor());
         copy->getBookData()->setYear(root->getBookData()->getYear());
-
-        // 왼쪽 자식 노드와 오른쪽 자식 노드를 재귀적으로 복사
-        copy->setLeftChild(deepCopy(root->getLeftChild()));
-        copy->setRightChild(deepCopy(root->getRightChild()));
-
 
         return copy;
     }

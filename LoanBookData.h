@@ -35,4 +35,8 @@ public:
     string getAuthor() { return author; }
     int getYear() { return year; }
     int getLoanCount() { return loan_count; }
+    void PrintData(ofstream& write)
+    {
+        write << getName() << "/" << getCode() << "/" << getAuthor() << "/" << getLoanCount() << endl;
+    }
 };

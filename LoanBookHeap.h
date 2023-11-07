@@ -2,6 +2,7 @@
 #include "LoanBookData.h"
 #include "LoanBookHeapNode.h"
 #include <vector>
+#include <algorithm>
 
 class LoanBookHeap
 {
@@ -24,4 +25,6 @@ public:
     void heapifyDown(LoanBookHeapNode* pN);
 
     bool Insert(LoanBookData* data);
+
+    bool SortandPrint(ofstream& write);
 };

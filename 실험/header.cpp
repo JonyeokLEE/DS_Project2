@@ -10,6 +10,7 @@ void SelectionTree::settingSelection()
         
     }
     int count = 1;
+    root = selvector.at(1);
     while (count < 16)
     {
         if (count < 8)
@@ -30,24 +31,27 @@ void SelectionTree::SelectionUp()
     for (int i = 7; i > 0; i--)
     {
         int j = 2 * i;
-        if(!selvector.at(j)&&!selvector.at(j+1))
+        if(!selvector.at(j)->getBookData() && !selvector.at(j + 1)->getBookData())
         {
-            selvector.at(i) = nullptr;
+            selvector.at(i)->setBookData(nullptr);
         }
-        else if (!selvector.at(j) && selvector.at(j + 1))
+        else if (!selvector.at(j)->getBookData() && selvector.at(j + 1)->getBookData())
         {
             selvector.at(i)->setBookData(selvector.at(j + 1)->getBookData());
         }
-        else if (selvector.at(j) && !selvector.at(j + 1))
+        else if (selvector.at(j)->getBookData() && !selvector.at(j + 1)->getBookData())
         {
             selvector.at(i)->setBookData(selvector.at(j)->getBookData());
-        }
-        else if (selvector.at(j)->getBookData()->getName() < selvector.at(j + 1)->getBookData()->getName())
-        {
-            selvector.at(i)->setBookData(selvector.at(j + 1)->getBookData());
         }
         else
-            selvector.at(i)->setBookData(selvector.at(j)->getBookData());
+        {
+             if (selvector.at(j)->getBookData()->getName() > selvector.at(j + 1)->getBookData()->getName())
+             {
+                 selvector.at(i)->setBookData(selvector.at(j + 1)->getBookData());
+             }
+             else
+                 selvector.at(i)->setBookData(selvector.at(j)->getBookData());
+        }
     }
 }
 
@@ -88,7 +92,6 @@ bool SelectionTree::Insert(LoanBookData* newData) {
 bool SelectionTree::Delete() {
     if (!root)
         return false;
-
     else
     {
         int location = 0;

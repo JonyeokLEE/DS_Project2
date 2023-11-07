@@ -48,6 +48,9 @@ int main() {
     LoanBookData book11;
     book11.setBookData("B", 100, "Author 5", 2023);
     sel.Insert(&book11);
+
+    //sel.LevelOrderPrint();
+    sel.vectorPrint();
     
     
     return 0;

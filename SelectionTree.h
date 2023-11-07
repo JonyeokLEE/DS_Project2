@@ -25,6 +25,7 @@ public:
     SelectionTreeNode* getRoot() { return root; }
 
     void settingSelection();
+    void SelectionUp();
 
     bool Insert(LoanBookData* newData);
     bool Delete();

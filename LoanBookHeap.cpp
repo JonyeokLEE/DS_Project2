@@ -89,3 +89,19 @@ bool LoanBookHeap::Insert(LoanBookData* data)
     heapifyUp(newNode);
     return true;
 }
+
+bool LoanBookHeap::SortandPrint(ofstream& write)
+{
+    vector<LoanBookHeapNode*> sorted;
+    for (int i = 1; i < LevelOrder.size(); i++)
+    {
+        sorted.push_back(LevelOrder.at(i));
+    }
+    sort(sorted.begin(), sorted.end(), [](LoanBookHeapNode* a, LoanBookHeapNode* b) {
+        return a->getBookData()->getName() < b->getBookData()->getName();
+        });
+    for (int i = 0; i < sorted.size(); i++)
+    {
+        sorted.at(i)->getBookData()->PrintData(write);
+    }
+}

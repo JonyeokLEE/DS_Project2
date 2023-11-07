@@ -24,10 +24,8 @@ void SelectionTree::settingSelection()
     }
 }
 
-
-
-bool SelectionTree::Insert(LoanBookData* newData) {
-    
+void SelectionTree::SelectionUp()
+{
     for (int i = 7; i > 0; i--)
     {
         int j = 2 * i;
@@ -41,12 +39,59 @@ bool SelectionTree::Insert(LoanBookData* newData) {
 }
 
 
-bool SelectionTree::Delete() {
 
+bool SelectionTree::Insert(LoanBookData* newData) {
+    
+    //Run 새로 들어오면 연결시켜주고 관리
+
+
+    SelectionUp();
+}
+
+
+bool SelectionTree::Delete() {
+    if (!root)
+        return false;
+
+    else
+    {
+        int location = 0;
+        for (int i = 8; i < 16; i++)
+        {
+            if (root->getBookData()->getName() == selvector.at(i)->getBookData()->getName())
+            {
+                location = i;
+                break;
+            }
+        }
+        selvector.at(location)->getHeap()->heapifyDown(selvector.at(location)->getHeap()->getRoot());
+        SelectionUp();
+        return true;
+    }
 }
 
 bool SelectionTree::printBookData(int bookCode) {
     
+    if (bookCode < 100 || bookCode >700 || bookCode % 100 != 0)
+        return false;
 
-    return true;
+    else
+    {
+        int location = 0;
+        for (int i = 8; i < 16; i++)
+        {
+            if (root->getBookData()->getName() == selvector.at(i)->getBookData()->getName())
+            {
+                location = i;
+                break;
+            }
+        }
+
+
+        if (selvector.at(location)->getHeap()->getRoot() == nullptr)
+            return false;
+        if (!selvector.at(location)->getHeap()->SortandPrint(*fout))
+            return false;
+        else return true;
+    }
 }
