@@ -12,6 +12,7 @@ private:
     SelectionTreeNode* pRight;
     SelectionTreeNode* pParent;
     LoanBookHeap* hRoot;
+    bool IsRun;
 
 
 public:
@@ -21,6 +22,7 @@ public:
         this->pRight = NULL;
         this->pParent = NULL;
         this->hRoot = NULL;
+        IsRun = false;
     }
     ~SelectionTreeNode() {
 
@@ -40,7 +42,7 @@ public:
         copy->setLeftChild(deepCopy(root->getLeftChild()));
         copy->setRightChild(deepCopy(root->getRightChild()));
 
-        
+
         copy->getBookData()->setName(root->getBookData()->getName());
         copy->getBookData()->setCode(root->getBookData()->getCode());
         copy->getBookData()->setAuthor(root->getBookData()->getAuthor());

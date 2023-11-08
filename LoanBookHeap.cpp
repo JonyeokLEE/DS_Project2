@@ -19,9 +19,38 @@ void LoanBookHeap::heapifyUp(LoanBookHeapNode* pN)
 
 
 void LoanBookHeap::heapifyDown(LoanBookHeapNode* pN) {
-    LoanBookHeapNode* curr = pN;
+    if (!root)
+        return;
+    root->setBookData(pN->getBookData());
 
-    while (curr)
+    if (pN->getParent())
+    {
+        if (pN->getParent()->getLeftChild() == pN)
+        {
+            pN->getParent()->setLeftChild(nullptr);
+            pN->setParent(nullptr);
+            LevelOrder.erase(LevelOrder.end() - 1);
+        }
+        else if (pN->getParent()->getRightChild() == pN)
+        {
+            pN->getParent()->setRightChild(nullptr);
+            pN->setParent(nullptr);
+            LevelOrder.erase(LevelOrder.end() - 1);
+        }
+    }
+    else
+    {
+        LevelOrder.erase(LevelOrder.end() - 1);
+        root = nullptr;
+        return;
+    }
+
+    LoanBookHeapNode* curr = root;
+
+
+
+    int size = 1;
+    while (curr && size <= LevelOrder.size())
     {
         LoanBookHeapNode* left = curr->getLeftChild();
         LoanBookHeapNode* right = curr->getRightChild();
@@ -46,8 +75,7 @@ void LoanBookHeap::heapifyDown(LoanBookHeapNode* pN) {
             child->setBookData(curr->getBookData());
             curr->setBookData(temp);
 
-            child = curr;
-            curr = child->getParent();
+            curr = child;
         }
 
         else
@@ -92,6 +120,12 @@ bool LoanBookHeap::Insert(LoanBookData* data)
 
 bool LoanBookHeap::SortandPrint(ofstream& write)
 {
+    return false;
+}
+
+/*
+bool LoanBookHeap::SortandPrint(ofstream& write)
+{
     vector<LoanBookHeapNode*> sorted;
     for (int i = 1; i < LevelOrder.size(); i++)
     {
@@ -105,3 +139,66 @@ bool LoanBookHeap::SortandPrint(ofstream& write)
         sorted.at(i)->getBookData()->PrintData(write);
     }
 }
+*/
+
+/*
+void LoanBookHeap::LevelOrderPrint()
+{
+    if (!root)
+    {
+        cout << "Heap is Empty" << endl;
+        return;
+    }
+    queue <LoanBookHeapNode*> q;
+    LoanBookHeapNode* curr = root;
+    cout << "Heap: ";
+    while (curr)
+    {
+        cout << curr->getBookData()->getName() << " ";
+        if (curr->getLeftChild())
+            q.push(curr->getLeftChild());
+        if (curr->getRightChild())
+            q.push(curr->getRightChild());
+        if (q.empty()) return;
+
+        curr = q.front();
+        q.pop();
+    }
+}
+void LoanBookHeap::vectorPrint()
+{
+    if (LevelOrder.empty())
+    {
+        cout << "Vector is Empty" << endl;
+        return;
+    }
+    cout << "Vector: ";
+    for (int i = 1; i < LevelOrder.size(); i++)
+    {
+        cout << LevelOrder.at(i)->getBookData()->getName() << " ";
+    }
+}
+
+
+void LoanBookHeap::SortAndPrint(int BookCode)
+{
+    if (!root)
+    {
+        cout << "Vector is Empty" << endl;
+        return;
+    }
+    vector<LoanBookHeapNode*> sorted;
+    for (int i = 1; i < LevelOrder.size(); i++)
+    {
+        sorted.push_back(LevelOrder.at(i));
+    }
+    sort(sorted.begin(), sorted.end(), [](LoanBookHeapNode* a, LoanBookHeapNode* b) {
+        return a->getBookData()->getName() < b->getBookData()->getName();
+        });
+    cout << "Sorted: ";
+    for (int i = 0; i < sorted.size(); i++)
+    {
+        cout << sorted.at(i)->getBookData()->getName() << " ";
+    }
+}
+*/

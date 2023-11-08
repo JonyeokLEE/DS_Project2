@@ -10,12 +10,20 @@ class SelectionTree
 private:
     SelectionTreeNode* root;
     vector<SelectionTreeNode*> selvector;
+    //vector<int> savedCode;
     ofstream* fout;
+    int enteredRun;
 
 public:
+    SelectionTree() {
+        this->root = NULL;
+        this->fout = NULL;
+        enteredRun = 7;
+    }
     SelectionTree(ofstream* fout) {
         this->root = NULL;
         this->fout = fout;
+        enteredRun = 7;
     }
     ~SelectionTree() {
 
@@ -29,5 +37,8 @@ public:
 
     bool Insert(LoanBookData* newData);
     bool Delete();
+    void LevelOrderPrint();
+    void vectorPrint();
+    void vectorPrintEach(int code);
     bool printBookData(int bookCode);
 };

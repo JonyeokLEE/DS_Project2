@@ -20,11 +20,18 @@ public:
 
     void setRoot(LoanBookHeapNode* pN) { this->root = pN; }
     LoanBookHeapNode* getRoot() { return root; }
+    LoanBookHeapNode* getLastNode() { return LevelOrder.at(LevelOrder.size() - 1); }
 
     void heapifyUp(LoanBookHeapNode* pN);
     void heapifyDown(LoanBookHeapNode* pN);
 
     bool Insert(LoanBookData* data);
+
+    //void LevelOrderPrint();
+
+    //void vectorPrint();
+
+    //void SortAndPrint(int BookCode);
 
     bool SortandPrint(ofstream& write);
 };
