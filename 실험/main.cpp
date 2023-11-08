@@ -2,7 +2,7 @@
 using namespace std;
 int main() {
     int command = 1;
-   // cin >> command;
+    cin >> command;
     if(command==1){
     SelectionTree sel;
     sel.settingSelection();
@@ -29,7 +29,7 @@ int main() {
 
     
     LoanBookData book6;
-    book6.setBookData("T", 200, "Author 1", 2023);
+    book6.setBookData("T", 000, "Author 1", 2023);
     sel.Insert(&book6);
 
     LoanBookData book7;
@@ -45,10 +45,10 @@ int main() {
     sel.Insert(&book9);
     
     LoanBookData book10;
-    book10.setBookData("I", 300, "Author 5", 2023);
+    book10.setBookData("I", 400, "Author 5", 2023);
     sel.Insert(&book10);
     LoanBookData book11;
-    book11.setBookData("B", 200, "Author 5", 2023);
+    book11.setBookData("B", 600, "Author 5", 2023);
     sel.Insert(&book11);
 
     sel.vectorPrintEach(000);

@@ -22,38 +22,60 @@ void SelectionTree::settingSelection()
         {
             selvector.at(count)->setParent(selvector.at(count / 2));
         }
+        if (count > 7)
+        {
+            LoanBookHeap* newHeap = new LoanBookHeap();
+            selvector.at(count)->setHeap(newHeap);
+        }
         count++;
     }
 }
 
 void SelectionTree::SelectionUp()
 {
-    for (int i = 7; i > 0; i--)
+    int level = 7;
+    while (level > 0)
     {
-        int j = 2 * i;
-        if(!selvector.at(j)->getBookData() && !selvector.at(j + 1)->getBookData())
+        SelectionTreeNode* curr = selvector.at(level);
+        SelectionTreeNode* left = selvector.at(2 * level);
+        SelectionTreeNode* right = selvector.at(2 * level + 1);
+
+        LoanBookData* copied = new LoanBookData();
+        if (!left->getBookData() && !right->getBookData())
         {
-            selvector.at(i)->setBookData(nullptr);
+            copied = nullptr;
+            curr->setBookData(copied);
         }
-        else if (!selvector.at(j)->getBookData() && selvector.at(j + 1)->getBookData())
+        else if (!left->getBookData() && right->getBookData())
         {
-            selvector.at(i)->setBookData(selvector.at(j + 1)->getBookData());
+            copied = right->getBookData();
+            curr->setBookData(copied);
         }
-        else if (selvector.at(j)->getBookData() && !selvector.at(j + 1)->getBookData())
+        else if (!right->getBookData() && left->getBookData())
         {
-            selvector.at(i)->setBookData(selvector.at(j)->getBookData());
+            copied = left->getBookData();
+            curr->setBookData(copied);
         }
         else
         {
-             if (selvector.at(j)->getBookData()->getName() > selvector.at(j + 1)->getBookData()->getName())
-             {
-                 selvector.at(i)->setBookData(selvector.at(j + 1)->getBookData());
-             }
-             else
-                 selvector.at(i)->setBookData(selvector.at(j)->getBookData());
+            if (right->getBookData()->getName() < left->getBookData()->getName())
+            {
+                copied = right->getBookData();
+                curr->setBookData(copied);
+            }
+            else
+            {
+                copied = left->getBookData();
+                curr->setBookData(copied);
+            }
         }
+
+        curr->setBookData(copied);
+        level--;
     }
 }
+
+
 
 
 
@@ -62,30 +84,11 @@ bool SelectionTree::Insert(LoanBookData* newData) {
     //Run 새로 들어오면 연결시켜주고 관리
     int code = newData->getCode();
     bool entered = false;
-    int location;
-    for (int i = 8; i < 16; i++)
-    {
-        if (selvector.at(i)->getHeap() == nullptr)
-            break;
-        if (code == selvector.at(i)->getHeap()->getRoot()->getBookData()->getCode())
-        {
-            entered = true;
-            location = i;
-        }
-    }
-    if (entered)
-    {
-        selvector.at(location)->getHeap()->Insert(newData);
-        selvector.at(location)->setBookData(selvector.at(location)->getHeap()->getRoot()->getBookData());
-    }
-    else
-    {
-        enteredRun++;
-        LoanBookHeap* newHeap = new LoanBookHeap();
-        selvector.at(enteredRun)->setHeap(newHeap);
-        newHeap->Insert(newData);
-        selvector.at(enteredRun)->setBookData(selvector.at(enteredRun)->getHeap()->getRoot()->getBookData());
-    }
+    int location = newData->getCode() / 100 + 8;
+    SelectionTreeNode* newone = selvector.at(location);
+    
+    newone->getHeap()->Insert(newData);
+    newone->setBookData(selvector.at(location)->getHeap()->getRoot()->getBookData());
     SelectionUp();
     return true;
 }
@@ -98,19 +101,11 @@ bool SelectionTree::Delete() {
     {
         bool exist = false;
         bool same = false;
-        int location = 0;
         exist = root->getBookData();
         if (!exist)
             return false;
 
-        for (int i = 8; i < 16; i++)
-        {
-            if (selvector.at(i)->getBookData()&&root->getBookData()->getCode() == selvector.at(i)->getBookData()->getCode())
-            {
-                location = i;
-                break;
-            }
-        }
+        int location = root->getBookData()->getCode() / 100 + 8;
         selvector.at(location)->getHeap()->heapifyDown(selvector.at(location)->getHeap()->getLastNode());
         if (!selvector.at(location)->getHeap()->getRoot())
         {
@@ -409,9 +404,16 @@ void LoanBookHeap::SortAndPrint(int BookCode)
     {
         sorted.push_back(LevelOrder.at(i));
     }
-    sort(sorted.begin(), sorted.end(), [](LoanBookHeapNode* a, LoanBookHeapNode* b) {
-        return a->getBookData()->getName() < b->getBookData()->getName();
-        });
+    for (int i = sorted.size() - 1; i > 0; i--) {
+        // 0 ~ (i-1)까지 반복
+        for (int j = 0; j < i; j++) {
+            if (sorted.at(j)->getBookData()->getName() > sorted.at(j+1)->getBookData()->getName()) {
+                LoanBookData* temp = sorted.at(j)->getBookData();
+                sorted.at(j)->setBookData(sorted.at(j + 1)->getBookData());
+                sorted.at(j+1)->setBookData(temp);
+            }
+        }
+    }
     cout << "Sorted: ";
     for (int i = 0; i < sorted.size(); i++)
     {

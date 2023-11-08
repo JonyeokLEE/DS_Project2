@@ -118,10 +118,36 @@ bool LoanBookHeap::Insert(LoanBookData* data)
     return true;
 }
 
+
 bool LoanBookHeap::SortandPrint(ofstream& write)
 {
-    return false;
+    if (!root)
+    {
+        cout << "Vector is Empty" << endl;
+        return;
+    }
+    vector<LoanBookHeapNode*> sorted;
+    for (int i = 1; i < LevelOrder.size(); i++)
+    {
+        sorted.push_back(LevelOrder.at(i));
+    }
+    for (int i = sorted.size() - 1; i > 0; i--) {
+        // 0 ~ (i-1)까지 반복
+        for (int j = 0; j < i; j++) {
+            if (sorted.at(j)->getBookData()->getName() > sorted.at(j + 1)->getBookData()->getName()) {
+                LoanBookData* temp = sorted.at(j)->getBookData();
+                sorted.at(j)->setBookData(sorted.at(j + 1)->getBookData());
+                sorted.at(j + 1)->setBookData(temp);
+            }
+        }
+    }
+    cout << "Sorted: ";
+    for (int i = 0; i < sorted.size(); i++)
+    {
+        cout << sorted.at(i)->getBookData()->getName() << " ";
+    }
 }
+
 
 /*
 bool LoanBookHeap::SortandPrint(ofstream& write)

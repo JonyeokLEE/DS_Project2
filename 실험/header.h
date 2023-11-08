@@ -126,7 +126,6 @@ public:
         this->pRight = NULL;
         this->pParent = NULL;
         this->hRoot = NULL;
-        IsRun = false;
     }
     ~SelectionTreeNode() {
 
@@ -169,18 +168,15 @@ private:
     vector<SelectionTreeNode*> selvector;
     //vector<int> savedCode;
     ofstream* fout;
-    int enteredRun;
 
 public:
     SelectionTree() {
         this->root = NULL;
         this->fout = NULL;
-        enteredRun = 7;
     }
     SelectionTree(ofstream* fout) {
         this->root = NULL;
         this->fout = fout;
-        enteredRun = 7;
     }
     ~SelectionTree() {
 
