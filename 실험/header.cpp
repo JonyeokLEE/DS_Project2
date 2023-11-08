@@ -96,16 +96,32 @@ bool SelectionTree::Delete() {
         return false;
     else
     {
+        bool exist = false;
+        bool same = false;
         int location = 0;
+        exist = root->getBookData();
+        if (!exist)
+            return false;
+
         for (int i = 8; i < 16; i++)
         {
-            if (root->getBookData()->getName() == selvector.at(i)->getBookData()->getName())
+            if (selvector.at(i)->getBookData()&&root->getBookData()->getCode() == selvector.at(i)->getBookData()->getCode())
             {
                 location = i;
                 break;
             }
         }
-        selvector.at(location)->getHeap()->heapifyDown(selvector.at(location)->getHeap()->getRoot());
+        selvector.at(location)->getHeap()->heapifyDown(selvector.at(location)->getHeap()->getLastNode());
+        if (!selvector.at(location)->getHeap()->getRoot())
+        {
+            selvector.at(location)->setBookData(nullptr);
+        }
+        else
+        {
+            selvector.at(location)->setBookData(selvector.at(location)->getHeap()->getRoot()->getBookData());
+        }
+        
+        
         SelectionUp();
         return true;
     }
@@ -119,15 +135,21 @@ void SelectionTree::LevelOrderPrint()
     }
     queue <SelectionTreeNode*> qq;
     SelectionTreeNode* curr = root;
-    cout << "Selection: ";
+    cout << endl << "Selection: ";
     while (curr)
     {
-        cout << curr->getBookData()->getName() << " ";
+        if (!curr->getBookData())
+            cout << "- ";
+        else
+        {
+            cout << curr->getBookData()->getName() << " ";
+        }
         if (curr->getLeftChild())
             qq.push(curr->getLeftChild());
         if (curr->getRightChild())
             qq.push(curr->getRightChild());
         if (qq.empty()) return;
+        
 
         curr = qq.front();
         qq.pop();
@@ -140,21 +162,25 @@ void SelectionTree::vectorPrint()
         cout << "Vector is Empty" << endl;
         return;
     }
-    cout << "Vector: ";
+    cout << endl << "Vector:    ";
     for (int i = 1; i < selvector.size(); i++)
     {
-        cout << selvector.at(i)->getBookData()->getName() << " ";
-    }
+        if (!selvector.at(i)->getBookData())
+            cout << "- ";
+        else
+        {
+            cout << selvector.at(i)->getBookData()->getName() << " ";
+        }
+
+    }cout << endl << endl << endl;
 }
 void SelectionTree::vectorPrintEach(int code)
 {
     bool entered = false;
     int location;
     for (int i = 8; i < 16; i++)
-    {
-        if (selvector.at(i)->getHeap() == nullptr)
-            break;
-        if (code == selvector.at(i)->getHeap()->getRoot()->getBookData()->getCode())
+    {       
+        if (selvector.at(i)->getBookData()&&code == selvector.at(i)->getHeap()->getRoot()->getBookData()->getCode())
         {
             entered = true;
             location = i;

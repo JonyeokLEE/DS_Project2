@@ -116,6 +116,7 @@ private:
     SelectionTreeNode* pRight;
     SelectionTreeNode* pParent;
     LoanBookHeap* hRoot;
+    bool IsRun;
 
 
 public:
@@ -125,6 +126,7 @@ public:
         this->pRight = NULL;
         this->pParent = NULL;
         this->hRoot = NULL;
+        IsRun = false;
     }
     ~SelectionTreeNode() {
 
