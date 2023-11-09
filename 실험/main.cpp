@@ -1,8 +1,10 @@
 #include "header.h"
+#include <fstream>
+#include "BpTree.h"
 using namespace std;
 int main() {
-    int command = 1;
-    cin >> command;
+    int command = 3;
+    //cin >> command;
     if(command==1){
     SelectionTree sel;
     sel.settingSelection();
@@ -372,7 +374,37 @@ int main() {
         heap.SortAndPrint(100);
         cout << endl;
     }
-    
+    if (command == 3)
+    {
+        ofstream fout;
+        BpTree btree(&fout);
+        string name, author;
+        int code=0, year=0;
+
+        LoanBookData* tmp = new LoanBookData;
+        tmp->setBookData("A", code, "A", year);
+        btree.Insert(tmp);
+        tmp->setBookData("B", code, "A", year);
+        btree.Insert(tmp);
+        tmp->setBookData("C", code, "A", year);
+        btree.Insert(tmp);
+        tmp->setBookData("D", code, "A", year);
+        btree.Insert(tmp);
+        tmp->setBookData("E", code, "A", year);
+        btree.Insert(tmp);
+        tmp->setBookData("Z", code, "A", year);
+        btree.Insert(tmp);
+
+        do
+        {
+            cout << "search name: ";
+            cin >> name;
+        } while (btree.searchBook(name));
+        cout << "search range(insert two people's name): ";
+        cin >> name >> author;
+        btree.searchRange(name, author);
+
+    }
     
     return 0;
 }
