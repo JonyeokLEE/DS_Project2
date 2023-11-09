@@ -124,7 +124,7 @@ bool LoanBookHeap::SortandPrint(ofstream& write)
     if (!root)
     {
         cout << "Vector is Empty" << endl;
-        return;
+        return false;
     }
     vector<LoanBookHeapNode*> sorted;
     for (int i = 1; i < LevelOrder.size(); i++)

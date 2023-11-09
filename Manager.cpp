@@ -236,7 +236,7 @@ bool Manager::SEARCH_BP_RANGE(string start, string end)
 
 bool Manager::PRINT_BP() 
 {
-	
+    return true;
 }
 
 bool Manager::PRINT_ST(int CodeToFind) 
@@ -250,7 +250,7 @@ bool Manager::PRINT_ST(int CodeToFind)
 
 bool Manager::DELETE() 
 {
-
+    return true;
 }
 
 void Manager::printErrorCode(int n) {				//ERROR CODE PRINT

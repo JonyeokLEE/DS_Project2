@@ -1,7 +1,6 @@
 #pragma once
 #include "LoanBookData.h"
 #include "LoanBookHeap.h"
-#include <algorithm>
 using namespace std;
 
 class SelectionTreeNode

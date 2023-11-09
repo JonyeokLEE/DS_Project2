@@ -34,8 +34,8 @@ public:
 
     bool Insert(LoanBookData* newData);
     bool Delete();
-    void LevelOrderPrint();
-    void vectorPrint();
-    void vectorPrintEach(int code);
+    //void LevelOrderPrint();
+    //void vectorPrint();
+    //void vectorPrintEach(int code);
     bool printBookData(int bookCode);
 };

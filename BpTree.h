@@ -12,11 +12,19 @@ private:
 	BpTreeNode* root;
 	int			order;		// m children
 	ofstream* fout;
+	int insertCount;
 public:
+	BpTree() {
+		root = NULL;
+		this->order = 3;
+		this->fout = nullptr;
+		this->insertCount = 0;
+	}
 	BpTree(ofstream *fout, int order = 3) {
 		root = NULL;
 		this->order = order;
 		this->fout = fout;
+		this->insertCount = 0;
 	}
 	~BpTree()
 	{
@@ -32,7 +40,7 @@ public:
 
 	bool searchBook(string name);
 	bool searchRange(string start, string end);
-
+	
 };
 
 #endif
