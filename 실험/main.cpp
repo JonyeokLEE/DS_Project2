@@ -3,7 +3,7 @@
 #include "BpTree.h"
 using namespace std;
 int main() {
-    int command = 3;
+    int command = 4;
     //cin >> command;
     if(command==1){
     SelectionTree sel;
@@ -382,17 +382,17 @@ int main() {
         int code=0, year=0;
 
         LoanBookData* tmp = new LoanBookData;
-        tmp->setBookData("A", code, "A", year);
+        tmp->setBookData("A", code, "X", year);
         btree.Insert(tmp);
-        tmp->setBookData("B", code, "A", year);
+        tmp->setBookData("B", code, "X", year);
         btree.Insert(tmp);
-        tmp->setBookData("C", code, "A", year);
+        tmp->setBookData("C", code, "X", year);
         btree.Insert(tmp);
-        tmp->setBookData("D", code, "A", year);
+        tmp->setBookData("D", code, "X", year);
         btree.Insert(tmp);
-        tmp->setBookData("E", code, "A", year);
+        tmp->setBookData("E", code, "X", year);
         btree.Insert(tmp);
-        tmp->setBookData("Z", code, "A", year);
+        tmp->setBookData("Z", code, "X", year);
         btree.Insert(tmp);
 
         do
@@ -405,6 +405,31 @@ int main() {
         btree.searchRange(name, author);
 
     }
-    
+    if (command == 4)
+    {
+        BpTree btree;
+        string name, author;
+        int code, year, num;
+
+        cout << "test num: ";
+        cin >> num;
+        for (int i = 0; i < num; i++)
+        {
+            cin >> name >> code >> author >> year;
+            LoanBookData* tmp = new LoanBookData;
+            tmp->setBookData(name, code, author, year);
+            btree.Insert(tmp);
+        }
+        do
+        {
+            cout << "search name: ";
+            cin >> name;
+        } while (btree.searchBook(name));
+        cout << "search range(insert two people's name): ";
+        cin >> name >> author;
+        btree.searchRange(name, author);
+        return 0;
+
+    }
     return 0;
 }

@@ -1,25 +1,74 @@
 #include "BpTree.h"
+#include "header.h"
 
 bool BpTree::Insert(LoanBookData* newData) {
 
-	BpTreeNode* StartPoint = searchDataNode(newData->getName());
-	
-	StartPoint->insertDataMap(newData->getName(), newData);
-	insertCount++;
+	if (!root)
 	{
-		if (insertCount > 2)
-			if (excessDataNode(StartPoint))
+		BpTreeNode* firstNode = new BpTreeDataNode();
+		firstNode->insertDataMap(newData->getName(), newData);
+		root = firstNode;
+		insertCount++;
+		return true;
+	}
+
+
+	if (insertCount > 1) {
+		BpTreeNode* StartPoint;
+		BpTreeNode* pCur = root;
+		while (pCur->getMostLeftChild())
+		{
+			if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
 			{
-				splitDataNode(StartPoint);
+				if (pCur->getIndexMap()->begin()->first > newData->getName()) //name < k1
+				{
+					pCur = pCur->getMostLeftChild(); // p = A0
+				}
+				else // k1 <= name
+				{
+					if (pCur->getIndexMap()->rbegin()->first > newData->getName()) // k1 <= name < k2
+					{
+						pCur = pCur->getIndexMap()->begin()->second; // p = A1
+					}
+					else // k2 <= name
+					{
+						pCur = pCur->getIndexMap()->rbegin()->second; //p = A2
+					}
+				}
+			}
+			else // A0 [(K1,A1)] 
+			{
+				if (pCur->getIndexMap()->begin()->first > newData->getName()) //name < k1
+				{
+					pCur = pCur->getMostLeftChild(); // p = A0
+				}
+				else // k1 <= name
+				{
+					pCur = pCur->getIndexMap()->begin()->second; // p = A1
+				}
+			}
+		}
+		StartPoint = pCur;
+		StartPoint->insertDataMap(newData->getName(), newData);
+		insertCount++;
+		if (excessDataNode(StartPoint))
+		{
+			splitDataNode(StartPoint);
+			StartPoint = StartPoint->getParent();
+			while (excessIndexNode(StartPoint))
+			{
+				splitIndexNode(StartPoint);
 				StartPoint = StartPoint->getParent();
 			}
-		while (excessIndexNode(StartPoint))
-		{
-			splitIndexNode(StartPoint);
-			StartPoint = StartPoint->getParent();
 		}
 	}
+	else
+	{
+		root->insertDataMap(newData->getName(), newData);
+		insertCount++;
+	}
 	return true;
+
 }
 
 bool BpTree::excessDataNode(BpTreeNode* pDataNode) {
@@ -33,54 +82,63 @@ bool BpTree::excessIndexNode(BpTreeNode* pIndexNode) {
 }
 
 void BpTree::splitDataNode(BpTreeNode* pDataNode) {
-	BpTreeNode* ToSplit = pDataNode;
-	BpTreeNode* SplitParent = ToSplit->getParent();
-
-	auto p = (ToSplit->getDataMap()->begin());
-	auto BeParent = ++(ToSplit->getDataMap()->begin());
-	auto q = (ToSplit->getDataMap()->rbegin());
+	BpTreeNode* rootParent = new BpTreeIndexNode();
+	BpTreeNode* SplitParent = new BpTreeIndexNode();
+	if (pDataNode == root)
+	{
+		rootParent->setMostLeftChild(pDataNode);
+		pDataNode->setParent(rootParent);
+		root = rootParent;
+	}
 	
-	BpTreeNode* pNode = new BpTreeDataNode();
-	pNode->insertDataMap(p->first,p->second);
+	auto p = (pDataNode->getDataMap()->begin());
+	auto BeParent = ++(pDataNode->getDataMap()->begin());
+	auto q = (pDataNode->getDataMap()->rbegin());
 
 	BpTreeNode* qNode = new BpTreeDataNode();
-	qNode->insertDataMap(BeParent->first, BeParent->second);
 	qNode->insertDataMap(q->first, q->second);
+	qNode->insertDataMap(BeParent->first, BeParent->second);
+	SplitParent = pDataNode->getParent();
 	SplitParent->insertIndexMap(BeParent->first, qNode);
-
-	SplitParent->setMostLeftChild(pNode);
-	pNode->setParent(SplitParent);
 	qNode->setParent(SplitParent);
+	if (pDataNode->getNext()!=nullptr)
+	{
+		pDataNode->getNext()->setPrev(qNode);
+		qNode->setNext(pDataNode->getNext());
+	}
 
-	pNode->setNext(qNode);
-	qNode->setPrev(pNode);
+	pDataNode->setNext(qNode);
+	qNode->setPrev(pDataNode);
+
+	pDataNode->deleteMap(BeParent->first);
+	pDataNode->deleteMap(q->first);
 }
 
 void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
-	BpTreeNode* ToSplit = pIndexNode;
-	BpTreeNode* SplitParent = new BpTreeDataNode();
-	if (ToSplit != root)
+	BpTreeNode* rootParent = new BpTreeIndexNode();
+	BpTreeNode* SplitParent = new BpTreeIndexNode();
+	if (pIndexNode == root)
 	{
-		BpTreeNode* SplitParent = ToSplit->getParent();
+		rootParent->setMostLeftChild(pIndexNode);
+		pIndexNode->setParent(rootParent);
+		root = rootParent;
 	}
+	
+	auto p = (pIndexNode->getIndexMap()->begin());
+	auto BeParent = ++(pIndexNode->getIndexMap()->begin());
+	auto q = (pIndexNode->getIndexMap()->rbegin());
 
-	auto p = (ToSplit->getIndexMap()->begin());
-	auto BeParent = ++(ToSplit->getIndexMap()->begin());
-	auto q = (ToSplit->getIndexMap()->rbegin());
-
-	BpTreeNode* pNode = new BpTreeDataNode();
-	pNode->setMostLeftChild(ToSplit->getMostLeftChild());
-	pNode->insertIndexMap(p->first, p->second);
-
-	BpTreeNode* qNode = new BpTreeDataNode();
+	BpTreeNode* qNode = new BpTreeIndexNode();
 	qNode->setMostLeftChild(BeParent->second);
 	qNode->insertIndexMap(q->first, q->second);
-
+	SplitParent = pIndexNode->getParent();
 	SplitParent->insertIndexMap(BeParent->first, qNode);
-	SplitParent->setMostLeftChild(pNode);
-	pNode->setParent(SplitParent);
+	BeParent->second->setParent(qNode);
+	q->second->setParent(qNode);
 	qNode->setParent(SplitParent);
 
+	pIndexNode->deleteMap(BeParent->first);
+	pIndexNode->deleteMap(q->first);
 }
 
 BpTreeNode* BpTree::searchDataNode(string name) {
@@ -93,7 +151,6 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 
 	while (pCur->getMostLeftChild())
 	{
-
 		if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
 		{
 			if (pCur->getIndexMap()->begin()->first > toFind) //name < k1
@@ -125,7 +182,14 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 		}
 	}
 	//found
-	return pCur;
+	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end())
+	{
+		return nullptr;
+	}
+	else
+	{
+		return pCur;
+	}
 }
 
 bool BpTree::searchBook(string name) {
@@ -170,16 +234,16 @@ bool BpTree::searchBook(string name) {
 		}
 	}
 
-	if (pCur->getDataMap()->find(name)->first != toFind)
+	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end())
 	{
 		return false;
 	}
 	else
 	{
-		pCur->getDataMap()->find(name)->second->PrintData(*fout);
+		pCur->getDataMap()->find(name)->second->PrintData();
 		return true;
 	}
-	
+
 }
 
 bool BpTree::searchRange(string start, string end) {
@@ -224,8 +288,8 @@ bool BpTree::searchRange(string start, string end) {
 			}
 		}
 	}
+	/*
 	auto StartingMap = pCur->getDataMap();
-	auto save = StartingMap->begin();
 	for (auto iter = StartingMap->begin(); iter != StartingMap->end(); iter++)
 	{
 		if (iter->first >= toFind)
@@ -233,20 +297,31 @@ bool BpTree::searchRange(string start, string end) {
 			break;
 		}
 		save++;
-	}
+	}*/
 
 	int count = 0;
-
+	auto save = pCur->getDataMap()->begin();
 	BpTreeNode* CurrentNode = pCur;
 	while (CurrentNode)
 	{
-		if (save->first > end)
-			break;
-		else
+		if (save->first >= start)
 		{
-			save->second->PrintData(*fout);
+			if (save->first > end)
+				break;
+			else
+			{
+				save->second->PrintData();
+				count++;
+			}
 		}
-		count++;
+		save++;
+		if (CurrentNode->getDataMap()->end()==save)
+		{
+			CurrentNode = CurrentNode->getNext();
+			if (!CurrentNode) break;
+			save = CurrentNode->getDataMap()->begin();
+
+		}
 	}
 	if (count == 0)
 		return false;

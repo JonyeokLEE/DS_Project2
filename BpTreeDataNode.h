@@ -1,8 +1,5 @@
-#ifndef _BpTreeDataNode_H_
-#define _BpTreeDataNode_H_
-
 #include "BpTreeNode.h"
-
+#include "header.h"
 class BpTreeDataNode : public BpTreeNode
 {
 private:
@@ -32,5 +29,3 @@ public:
 	}
 	map<string, LoanBookData*>* getDataMap() { return &mapData; }
 };
-
-#endif

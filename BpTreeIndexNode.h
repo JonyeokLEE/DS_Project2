@@ -1,7 +1,5 @@
-#ifndef _BPTREEINDEXNODE_H_
-#define _BPTREEINDEXNODE_H_
-
 #include "BpTreeNode.h"
+#include "header.h"
 //template <class T>
 class BpTreeIndexNode : public BpTreeNode {
 private:
@@ -25,5 +23,3 @@ public:
 	map <string, BpTreeNode*>* getIndexMap() { return &mapIndex; }
 
 };
-
-#endif
