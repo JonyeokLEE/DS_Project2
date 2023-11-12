@@ -1,8 +1,6 @@
 #pragma once
-#include <iostream>
+#include "LoanBookData.h"
 #include <map>
-#include "header.h"
-using namespace std;
 
 class BpTreeNode
 {

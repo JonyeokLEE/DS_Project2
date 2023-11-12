@@ -3,9 +3,10 @@
 
 #include "BpTreeDataNode.h"
 #include "BpTreeIndexNode.h"
-#include "header.h"
+#include "LoanBookData.h"
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 class BpTree {
 private:
@@ -13,6 +14,7 @@ private:
 	int			order;		// m children
 	ofstream* fout;
 	int insertCount;
+	vector<LoanBookData*> SaveToPrint;
 public:
 	BpTree() {
 		root = NULL;
@@ -38,8 +40,14 @@ public:
 	BpTreeNode* getRoot() { return root; }
 	BpTreeNode* searchDataNode(string name);
 
+	bool searchExistence(string name);
+
 	bool searchBook(string name);
 	bool searchRange(string start, string end);
+
+	bool printAll();
+
+	bool deleteBook(string name);
 	
 };
 

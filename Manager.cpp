@@ -2,17 +2,24 @@
 
 Manager::Manager()
 {
-
+    flog.open("log.txt");
+    bptree = new BpTree(&flog);
+    stree = new SelectionTree(&flog);
+    stree->settingSelection();
 }
 
 Manager::Manager(int bpOrder)
 {
-
+    flog.open("log.txt");
+    bptree = new BpTree(&flog);
+    stree = new SelectionTree(&flog);
+    stree->settingSelection();
 }
 
 Manager::~Manager()
 {
-
+    delete bptree;
+    delete stree;
 }
 
 void Manager::run(const char* command)
@@ -42,7 +49,7 @@ void Manager::run(const char* command)
         }
         else if (cmd.substr(0, 3) == ("ADD")) //ADD command
         {
-            bool success = ADD();
+            bool success = ADD(cmd.substr(4));
             if (success) //if success LOAD
             {
                 printSuccessCode("ADD");
@@ -55,36 +62,16 @@ void Manager::run(const char* command)
         else if (cmd.substr(0, 9) == ("SEARCH_BP")) //QPOP command
         {
             bool success = SEARCH_BP(cmd.substr(10));
-            if (success) //if success LOAD
-            {
-                printSuccessCode("SEARCH_BP");
-            }
-            else
-            {
-                printErrorCode(300);
-            }
         }
         else if (cmd == ("PRINT_BP")) //SEARCH Command
         {
             bool success = PRINT_BP();
-            if (success) //if success LOAD
-            {
-                printSuccessCode("PRINT_BP");
-            }
-            else
-            {
-                printErrorCode(400);
-            }
         }
         else if (cmd.substr(0, 8) == ("PRINT_ST")) //PRINT command
         {
             int CodeToFind = stoi(cmd.substr(9));
             bool success = PRINT_ST(CodeToFind);
-            if (success) //if success LOAD
-            {
-                printSuccessCode("PRINT_ST");
-            }
-            else
+            if (!success)
             {
                 printErrorCode(500);
             }
@@ -126,7 +113,7 @@ bool Manager::LOAD()
     {
         return false;
     }
-
+    bool success = false;
     string line;
     while (getline(readdata, line))
     {
@@ -151,16 +138,58 @@ bool Manager::LOAD()
         int loan_count = stoi(result[4]);
 
         LoanBookData* newone = new LoanBookData();
-        newone->setBookData(name, code, author, year);
-        bptree.Insert(newone);
+        newone->setBookData(name, code, author, year, loan_count);
+        if (code == 0 || code == 100 || code == 200)
+        {
+            if (loan_count < 3)
+            {
+                success = bptree->Insert(newone);
+            }
+            else
+            {
+                success = stree->Insert(newone);
+            }
+        }
+        else if (code == 300 || code == 400)
+        {
+            if (loan_count < 4)
+            {
+                success = bptree->Insert(newone);
+            }
+            else
+            {
+                success = stree->Insert(newone);
+            }
+        }
+        else if (code == 500 || code == 600 || code == 700)
+        {
+            if (loan_count < 2)
+            {
+                success = bptree->Insert(newone);
+            }
+            else
+            {
+                success = stree->Insert(newone);
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
     readdata.close(); //close the file
-    return true; //Success Load
+    if (success)
+    {
+        return true;
+    }
+    else
+        return false;
 }
 
-bool Manager::ADD()
+bool Manager::ADD(string command)
 {
-    string line;
+    string line = command;
+    bool success = false;
     vector<string> result; //to store the values into vector array
     stringstream ss(line);
     string temp;
@@ -170,57 +199,94 @@ bool Manager::ADD()
         result.push_back(temp);
     }
 
-    if (result.size() != 5) //if number of value is not 5
+    if (result.size() != 4) //if number of value is not 5
     {
         return false;
     }
+
 
     string name = result[0];
     int code = stoi(result[1]);
     string author = result[2];
     int year = stoi(result[3]);
-    int loan_count = stoi(result[4]);
-
+    int count = 0;
     LoanBookData* newone = new LoanBookData();
-    newone->setBookData(name, code, author, year);
-    bptree.Insert(newone);
-	return true;
+    newone->setBookData(name, code, author, year, count);
+    success = bptree->Insert(newone);
+    BpTreeNode* AfterInsert = bptree->searchDataNode(name);
+    if (code == 0 || code == 100 || code == 200)
+    {
+        if (AfterInsert->getDataMap()->find(name)->second->getLoanCount() >= 3)
+        {
+            success = bptree->deleteBook(name);
+            success = stree->Insert(newone);
+        }
+    }
+    else if (code == 300 || code == 400)
+    {
+        if (AfterInsert->getDataMap()->find(name)->second->getLoanCount() >= 4)
+        {
+            success = bptree->deleteBook(name);
+            success = stree->Insert(newone);
+        }
+    }
+    else if (code == 500 || code == 600 || code == 700)
+    {
+        if (AfterInsert->getDataMap()->find(name)->second->getLoanCount() >= 2)
+        {
+            success = bptree->deleteBook(name);
+            success = stree->Insert(newone);
+        }
+    }
+    else
+    {
+        return false;
+    }
+    if (success)
+    {
+        return true;
+    }
+    else
+        return false;
 }
 
 bool Manager::SEARCH_BP(string ToSearch)
 {
     string line = ToSearch;
+    bool success = false;
     int SpaceCount = 0;
-    SpaceCount = count(line.begin(), line.end(), ' ');
+    SpaceCount = count(line.begin(), line.end(), '\t');
     if (SpaceCount == 0)
     {
-        bptree.searchBook(ToSearch);
-        return true;
+        success = SEARCH_BP_BOOK(ToSearch);
     }
     else if (SpaceCount == 1)
     {
         vector<string> result; //to store the values into vector array
         stringstream ss(line);
         string temp;
-        while (getline(ss, temp, ' ')) // 탭 또는 개행 문자를 파싱 기준으로 사용
+        while (getline(ss, temp, '\t'))
         {
             result.push_back(temp);
         }
-        if (result.size() != 2) //if number of value is not 5
+        if (result.size() != 2) //if number of value is not 2
         {
             return false;
         }
         string start = result[0];
         string end = result[1];
-        bptree.searchRange(start, end);
+        success = SEARCH_BP_RANGE(start, end);
     }
     else
         return false;
+    if (success)
+        return true;
+    else return false;
 }
 
 bool Manager::SEARCH_BP_BOOK(string book) 
 {
-    if (bptree.searchBook(book))
+    if (bptree->searchBook(book))
         return true;
     else
         return false;
@@ -228,7 +294,7 @@ bool Manager::SEARCH_BP_BOOK(string book)
 
 bool Manager::SEARCH_BP_RANGE(string start, string end) 
 {
-    if (bptree.searchRange(start, end))
+    if (bptree->searchRange(start, end))
         return true;
     else
         return false;
@@ -236,13 +302,20 @@ bool Manager::SEARCH_BP_RANGE(string start, string end)
 
 bool Manager::PRINT_BP() 
 {
-    return true;
+    if (bptree->printAll())
+        return true;
+    else
+        return false;
 }
 
 bool Manager::PRINT_ST(int CodeToFind) 
 {
     int tofind = CodeToFind;
-    if (stree.printBookData(CodeToFind))
+    if (tofind < 0 || tofind>700)
+    {
+        return false;
+    }
+    if (stree->printBookData(CodeToFind))
         return true;
     else
         return false;
@@ -250,7 +323,10 @@ bool Manager::PRINT_ST(int CodeToFind)
 
 bool Manager::DELETE() 
 {
-    return true;
+    if (stree->Delete())
+        return true;
+    else
+        return false;
 }
 
 void Manager::printErrorCode(int n) {				//ERROR CODE PRINT

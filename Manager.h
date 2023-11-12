@@ -14,8 +14,8 @@ class Manager
 {
 private:
 	string cmd;
-	BpTree bptree;
-	SelectionTree stree;
+	BpTree* bptree;
+	SelectionTree* stree;
 	ifstream fin;
 	ofstream flog;
 
@@ -27,7 +27,7 @@ public:
 
 	void run(const char* command);
 	bool LOAD();
-	bool ADD();
+	bool ADD(string command);
 
 	bool SEARCH_BP(string ToSearch);
 

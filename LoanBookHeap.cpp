@@ -123,7 +123,6 @@ bool LoanBookHeap::SortandPrint(ofstream& write)
 {
     if (!root)
     {
-        cout << "Vector is Empty" << endl;
         return false;
     }
     vector<LoanBookHeapNode*> sorted;
@@ -132,7 +131,6 @@ bool LoanBookHeap::SortandPrint(ofstream& write)
         sorted.push_back(LevelOrder.at(i));
     }
     for (int i = sorted.size() - 1; i > 0; i--) {
-        // 0 ~ (i-1)까지 반복
         for (int j = 0; j < i; j++) {
             if (sorted.at(j)->getBookData()->getName() > sorted.at(j + 1)->getBookData()->getName()) {
                 LoanBookData* temp = sorted.at(j)->getBookData();
@@ -141,11 +139,13 @@ bool LoanBookHeap::SortandPrint(ofstream& write)
             }
         }
     }
-    cout << "Sorted: ";
+    write << "========PRINT_ST========" << endl;
     for (int i = 0; i < sorted.size(); i++)
     {
-        cout << sorted.at(i)->getBookData()->getName() << " ";
+        sorted.at(i)->getBookData()->PrintData(write);
     }
+    write << "=========================" << endl << endl;
+    return true;
 }
 
 

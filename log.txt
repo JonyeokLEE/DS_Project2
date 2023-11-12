@@ -1,0 +1,187 @@
+===== LOAD =====
+Success
+===============
+
+===== ADD =====
+Success
+===============
+
+===== ADD =====
+Success
+===============
+
+========SEARCH_BP========
+book/200/risa/0
+==========================
+
+===== ADD =====
+Success
+===============
+
+===== ADD =====
+Success
+===============
+
+===== ADD =====
+Success
+===============
+
+========ERROR========
+300
+=====================
+
+========SEARCH_BP========
+ahgj/200/Dk/1
+arrpqxy/000/Bc Kv Ti/0
+askx/300/Sa Ir Gc/1
+azhn/500/De Wv Dk/0
+boy hnni/200/Rf/1
+brdj/400/Al So Uw/0
+cadz jfhd/400/Lp El/0
+ctdd/100/VpKr/0
+cwdo/000/Fi Lm/0
+czjn/700/Zq Le Zb/1
+dbzl/000/Ji Iv/0
+==========================
+
+========ERROR========
+300
+=====================
+
+========PRINT_BP========
+ahgj/200/Dk/1
+arrpqxy/000/Bc Kv Ti/0
+askx/300/Sa Ir Gc/1
+azhn/500/De Wv Dk/0
+boy hnni/200/Rf/1
+brdj/400/Al So Uw/0
+cadz jfhd/400/Lp El/0
+ctdd/100/VpKr/0
+cwdo/000/Fi Lm/0
+czjn/700/Zq Le Zb/1
+dbzl/000/Ji Iv/0
+euwc okat/700/NkEjKj/1
+gaiv/300/Jh Zg Fo/1
+gvdk/500/VdUxWl/1
+hnek/500/Uw Tf Rk/1
+hzyd/400/Ng Zk Zz/1
+jebg/300/Sb Ov Mz/1
+jj fo kdgi/600/Iu Ng De/0
+jmlo/300/Fr/0
+knfu tmlf/700/Vh/0
+lbbj/400/Hh/1
+like/100/Bi Pw/1
+loku/300/Tc/0
+msdg/000/Ke Xt/0
+oecl/300/Vo/1
+ojqo/700/Nt Bl Tr/1
+ol vfmu/400/Ia/1
+pciv/300/Nf/1
+pdef/600/TcSk Yo/0
+pjop/100/Hc/1
+plof/000/Fx/0
+qaml mjxz/100/PoZbTp/1
+ruz ulmb/100/Xp/2
+sscawci/500/Lv Ao/0
+tmb dcgp/100/Kc Lp Ja/0
+txbt/000/Gm Ca/1
+udak/000/Bg/1
+vdze ykxv/100/Cz Cx Mq/1
+vfix/100/Cm/1
+vfna/500/Ue/1
+wnyz ukte/000/Tu/0
+wsuf/000/Hv Al/2
+xbmg/400/Qo/1
+xmwf/400/Ew Bt Fd/2
+yuqu/000/Qh/0
+==========================
+
+========PRINT_ST========
+abc/000/nd/3
+kchk/000/Hg/4
+=========================
+
+=======================
+ERROR 500
+=======================
+
+========PRINT_ST========
+book/200/risa/0
+=========================
+
+=======================
+ERROR 500
+=======================
+
+========PRINT_ST========
+seey/400/Yu Aa Mv/5
+=========================
+
+========PRINT_ST========
+klim/500/Io Sd/2
+=========================
+
+=======================
+ERROR 500
+=======================
+
+========PRINT_ST========
+fkse/700/Ws Om Vk/3
+knfu tmlf/700/Vh/3
+ydxb mxko/700/Sf/3
+=========================
+
+=======================
+ERROR 500
+=======================
+
+===== DELETE =====
+Success
+===============
+
+========PRINT_ST========
+kchk/000/Hg/4
+=========================
+
+=======================
+ERROR 500
+=======================
+
+========PRINT_ST========
+book/200/risa/0
+=========================
+
+=======================
+ERROR 500
+=======================
+
+========PRINT_ST========
+seey/400/Yu Aa Mv/5
+=========================
+
+========PRINT_ST========
+klim/500/Io Sd/2
+=========================
+
+=======================
+ERROR 500
+=======================
+
+========PRINT_ST========
+fkse/700/Ws Om Vk/3
+knfu tmlf/700/Vh/3
+ydxb mxko/700/Sf/3
+=========================
+
+=======================
+ERROR 500
+=======================
+
+=======================
+ERROR 700
+=======================
+
+===== EXIT =====
+Success
+===============
+
