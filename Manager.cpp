@@ -2,7 +2,7 @@
 
 Manager::Manager()
 {
-    flog.open("log.txt");
+    flog.open("log.txt", ios::app);
     bptree = new BpTree(&flog);
     stree = new SelectionTree(&flog);
     stree->settingSelection();
@@ -10,7 +10,7 @@ Manager::Manager()
 
 Manager::Manager(int bpOrder)
 {
-    flog.open("log.txt");
+    flog.open("log.txt", ios::app);
     bptree = new BpTree(&flog);
     stree = new SelectionTree(&flog);
     stree->settingSelection();
@@ -50,11 +50,7 @@ void Manager::run(const char* command)
         else if (cmd.substr(0, 3) == ("ADD")) //ADD command
         {
             bool success = ADD(cmd.substr(4));
-            if (success) //if success LOAD
-            {
-                printSuccessCode("ADD");
-            }
-            else
+            if (!success) //if success LOAD
             {
                 printErrorCode(200);
             }
@@ -108,7 +104,7 @@ void Manager::run(const char* command)
 bool Manager::LOAD()
 {
     ifstream readdata; //To read "data.txt"
-    readdata.open("loan_book.txt");
+    readdata.open("loan_book3.txt");
     if (!readdata)
     {
         return false;
@@ -214,6 +210,8 @@ bool Manager::ADD(string command)
     newone->setBookData(name, code, author, year, count);
     success = bptree->Insert(newone);
     BpTreeNode* AfterInsert = bptree->searchDataNode(name);
+    count = AfterInsert->getDataMap()->find(name)->second->getLoanCount();
+    newone->setCount(count);
     if (code == 0 || code == 100 || code == 200)
     {
         if (AfterInsert->getDataMap()->find(name)->second->getLoanCount() >= 3)
@@ -244,6 +242,12 @@ bool Manager::ADD(string command)
     }
     if (success)
     {
+        flog << "========ADD========" << endl;
+        flog << newone->getName() << "/";
+        if (code == 0) flog << "000/";
+        else flog << newone->getCode() << "/";
+        flog << newone->getAuthor() << "/" << newone->getYear() << endl;
+        flog << "====================" << endl << endl;
         return true;
     }
     else
@@ -330,9 +334,9 @@ bool Manager::DELETE()
 }
 
 void Manager::printErrorCode(int n) {				//ERROR CODE PRINT
-	flog << "=======================" << endl;
-	flog << "ERROR " << n << endl;
-	flog << "=======================" << endl << endl;
+	flog << "========ERROR========" << endl;
+	flog << n << endl;
+	flog << "=====================" << endl << endl;
 }
 
 void Manager::printSuccessCode(const char* cmd) //Print Success

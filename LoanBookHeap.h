@@ -2,20 +2,32 @@
 #include "LoanBookData.h"
 #include "LoanBookHeapNode.h"
 #include <vector>
-#include <algorithm>
 
 class LoanBookHeap
 {
 private:
     LoanBookHeapNode* root;
     vector<LoanBookHeapNode*> LevelOrder;
-
+    void destructor(LoanBookHeapNode* pCur)
+    {
+        if (!pCur) return;
+        else
+        {
+            destructor(pCur->getRightChild());
+            destructor(pCur->getLeftChild());
+            delete pCur;
+        }
+    }
+    void CallDestructor()
+    {
+        destructor(root);
+    }
 public:
     LoanBookHeap() {
         this->root = NULL;
     };
     ~LoanBookHeap() {
-
+        CallDestructor();
     }
 
     void setRoot(LoanBookHeapNode* pN) { this->root = pN; }

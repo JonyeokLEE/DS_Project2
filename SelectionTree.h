@@ -12,6 +12,20 @@ private:
     vector<SelectionTreeNode*> selvector;
     //vector<int> savedCode;
     ofstream* fout;
+    void destructor(SelectionTreeNode* pCur)
+    {
+        if (!pCur) return;
+        else
+        {
+            destructor(pCur->getRightChild());
+            destructor(pCur->getLeftChild());
+            delete pCur;
+        }
+    }
+    void CallDestructor()
+    {
+        destructor(root);
+    }
 
 public:
     SelectionTree() {
@@ -23,7 +37,7 @@ public:
         this->fout = fout;
     }
     ~SelectionTree() {
-
+        CallDestructor();
     }
 
     void setRoot(SelectionTreeNode* pN) { this->root = pN; }

@@ -15,6 +15,28 @@ private:
 	ofstream* fout;
 	int insertCount;
 	vector<LoanBookData*> SaveToPrint;
+	void destructor(BpTreeNode* pCur)
+	{
+		if (!pCur) return;
+		else
+		{
+			if (pCur->getMostLeftChild())
+			{
+				destructor(pCur->getMostLeftChild());
+				if ((pCur->getIndexMap()->begin()->second))
+				{
+					destructor(pCur->getIndexMap()->begin()->second);
+				}
+				if (pCur->getIndexMap()->rbegin()->second)
+				{
+					destructor(pCur->getIndexMap()->rbegin()->second);
+				}
+			}
+			else return;
+			delete pCur;
+		}
+	}
+
 public:
 	BpTree() {
 		root = NULL;
@@ -30,6 +52,7 @@ public:
 	}
 	~BpTree()
 	{
+		//destructor(root);
 	}
 	/* essential */
 	bool		Insert(LoanBookData* newData);
