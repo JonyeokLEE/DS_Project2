@@ -11,7 +11,6 @@ private:
     SelectionTreeNode* pRight;
     SelectionTreeNode* pParent;
     LoanBookHeap* hRoot;
-    bool IsRun;
 
 
 public:
@@ -21,7 +20,6 @@ public:
         this->pRight = NULL;
         this->pParent = NULL;
         this->hRoot = NULL;
-        IsRun = false;
     }
     ~SelectionTreeNode() {
 
@@ -32,6 +30,7 @@ public:
     void setRightChild(SelectionTreeNode* pR) { this->pRight = pR; }
     void setParent(SelectionTreeNode* pP) { this->pParent = pP; }
     void setHeap(LoanBookHeap* pHR) { this->hRoot = pHR; }
+    //function to set data
 
     // function to output heap data stored in LoanBookHeap according to book classification code
     LoanBookHeapNode* deepCopy(LoanBookHeapNode* root) {
@@ -55,4 +54,5 @@ public:
     SelectionTreeNode* getRightChild() { return pRight; }
     SelectionTreeNode* getParent() { return pParent; }
     LoanBookHeap* getHeap() { return hRoot; }
+    //function to get data
 };
