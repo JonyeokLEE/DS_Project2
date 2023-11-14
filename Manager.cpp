@@ -2,37 +2,37 @@
 
 Manager::Manager()
 {
-    flog.open("log.txt", ios::app);
+    flog.open("log.txt", ios::app); //open "log.txt" to write in succession
     bptree = new BpTree(&flog);
     stree = new SelectionTree(&flog);
-    stree->settingSelection();
+    stree->settingSelection(); //setting Selection Tree
 }
 
 Manager::Manager(int bpOrder)
 {
-    flog.open("log.txt", ios::app);
+    flog.open("log.txt", ios::app); //open "log.txt" to write in succession
     bptree = new BpTree(&flog);
     stree = new SelectionTree(&flog);
-    stree->settingSelection();
+    stree->settingSelection(); //setting Selection Tree
 }
 
 Manager::~Manager()
 {
     delete bptree;
-    delete stree;
+    delete stree; //delete Pointer
 }
 
 void Manager::run(const char* command)
 {
-	fin.open(command);
-	if(!fin)
+	fin.open(command); //open Command File
+	if(!fin) //if fail to open
 	{
 		flog << "File Open Error" << endl;
 		return;
 	}
     string cmd;
-    //bool stop = false;
-    while (!fin.eof()) //if stop == true -> EXIT
+
+    while (!fin.eof()) //Untill the end of File
     {
         getline(fin, cmd); //get a line of command file
         if (cmd == ("LOAD")) //LOAD Command
@@ -55,15 +55,15 @@ void Manager::run(const char* command)
                 printErrorCode(200);
             }
         }
-        else if (cmd.substr(0, 9) == ("SEARCH_BP")) //QPOP command
+        else if (cmd.substr(0, 9) == ("SEARCH_BP")) //SEARCH_BP command
         {
             bool success = SEARCH_BP(cmd.substr(10));
         }
-        else if (cmd == ("PRINT_BP")) //SEARCH Command
+        else if (cmd == ("PRINT_BP")) //PRINT_BP Command
         {
             bool success = PRINT_BP();
         }
-        else if (cmd.substr(0, 8) == ("PRINT_ST")) //PRINT command
+        else if (cmd.substr(0, 8) == ("PRINT_ST")) //PRINT_ST command
         {
             int CodeToFind = stoi(cmd.substr(9));
             bool success = PRINT_ST(CodeToFind);
@@ -94,23 +94,21 @@ void Manager::run(const char* command)
             printErrorCode(700);
         }
     }
-
-
     fin.close();
     flog.close(); //Close FIles
-    return;
+    return; //finish
 }
 
-bool Manager::LOAD()
+bool Manager::LOAD() //LOAD command
 {
-    ifstream readdata; //To read "data.txt"
-    readdata.open("loan_book3.txt");
+    ifstream readdata; //To read "loan_book.txt"
+    readdata.open("loan_book.txt");
     if (!readdata)
     {
         return false;
     }
-    bool success = false;
-    string line;
+    bool success = false; //to know is LOAD Success?
+    string line; //to read data
     while (getline(readdata, line))
     {
         vector<string> result; //to store the values into vector array
@@ -131,10 +129,12 @@ bool Manager::LOAD()
         int code = stoi(result[1]);
         string author = result[2];
         int year = stoi(result[3]);
-        int loan_count = stoi(result[4]);
+        int loan_count = stoi(result[4]); //store the value from command
 
         LoanBookData* newone = new LoanBookData();
-        newone->setBookData(name, code, author, year, loan_count);
+        newone->setBookData(name, code, author, year, loan_count); //set Data
+
+        //store the data with its code and count
         if (code == 0 || code == 100 || code == 200)
         {
             if (loan_count < 3)
@@ -182,7 +182,7 @@ bool Manager::LOAD()
         return false;
 }
 
-bool Manager::ADD(string command)
+bool Manager::ADD(string command) //ADD command
 {
     string line = command;
     bool success = false;
@@ -195,7 +195,7 @@ bool Manager::ADD(string command)
         result.push_back(temp);
     }
 
-    if (result.size() != 4) //if number of value is not 5
+    if (result.size() != 4) //if number of value is not 4
     {
         return false;
     }
@@ -207,17 +207,20 @@ bool Manager::ADD(string command)
     int year = stoi(result[3]);
     int count = 0;
     LoanBookData* newone = new LoanBookData();
-    newone->setBookData(name, code, author, year, count);
-    success = bptree->Insert(newone);
+    newone->setBookData(name, code, author, year, count); //store the value
+
+    success = bptree->Insert(newone); //insert to BpTree
     BpTreeNode* AfterInsert = bptree->searchDataNode(name);
     count = AfterInsert->getDataMap()->find(name)->second->getLoanCount();
-    newone->setCount(count);
+    newone->setCount(count); //get updated count
+
+    //delete from Bptree and store to SelectionTree if its count is over
     if (code == 0 || code == 100 || code == 200)
     {
         if (AfterInsert->getDataMap()->find(name)->second->getLoanCount() >= 3)
         {
-            success = bptree->deleteBook(name);
-            success = stree->Insert(newone);
+            success = bptree->deleteBook(name); //delete data from bptree
+            success = stree->Insert(newone); //insert to stree
         }
     }
     else if (code == 300 || code == 400)
@@ -240,7 +243,7 @@ bool Manager::ADD(string command)
     {
         return false;
     }
-    if (success)
+    if (success) //Print Success
     {
         flog << "========ADD========" << endl;
         flog << newone->getName() << "/";
@@ -254,7 +257,7 @@ bool Manager::ADD(string command)
         return false;
 }
 
-bool Manager::SEARCH_BP(string ToSearch)
+bool Manager::SEARCH_BP(string ToSearch) //SEARCH_BP command
 {
     string line = ToSearch;
     bool success = false;
@@ -262,9 +265,9 @@ bool Manager::SEARCH_BP(string ToSearch)
     SpaceCount = count(line.begin(), line.end(), '\t');
     if (SpaceCount == 0)
     {
-        success = SEARCH_BP_BOOK(ToSearch);
+        success = SEARCH_BP_BOOK(ToSearch); //run SEARCH_BP_BOOK
     }
-    else if (SpaceCount == 1)
+    else if (SpaceCount == 1) //if there is two parameter in command
     {
         vector<string> result; //to store the values into vector array
         stringstream ss(line);
@@ -279,7 +282,7 @@ bool Manager::SEARCH_BP(string ToSearch)
         }
         string start = result[0];
         string end = result[1];
-        success = SEARCH_BP_RANGE(start, end);
+        success = SEARCH_BP_RANGE(start, end); //run SEARCH_BP_RANGE
     }
     else
         return false;
@@ -290,7 +293,7 @@ bool Manager::SEARCH_BP(string ToSearch)
 
 bool Manager::SEARCH_BP_BOOK(string book) 
 {
-    if (bptree->searchBook(book))
+    if (bptree->searchBook(book)) //if success
         return true;
     else
         return false;
@@ -298,24 +301,24 @@ bool Manager::SEARCH_BP_BOOK(string book)
 
 bool Manager::SEARCH_BP_RANGE(string start, string end) 
 {
-    if (bptree->searchRange(start, end))
+    if (bptree->searchRange(start, end)) //if success
         return true;
     else
         return false;
 }
 
-bool Manager::PRINT_BP() 
+bool Manager::PRINT_BP() //PRINT_BP command
 {
-    if (bptree->printAll())
+    if (bptree->printAll()) //if success
         return true;
     else
         return false;
 }
 
-bool Manager::PRINT_ST(int CodeToFind) 
+bool Manager::PRINT_ST(int CodeToFind) //PRINT_ST command
 {
     int tofind = CodeToFind;
-    if (tofind < 0 || tofind>700)
+    if (tofind < 0 || tofind>700 || tofind%100!=0) //Wrong code is entered
     {
         return false;
     }
@@ -325,7 +328,7 @@ bool Manager::PRINT_ST(int CodeToFind)
         return false;
 }
 
-bool Manager::DELETE() 
+bool Manager::DELETE() //DELETE command
 {
     if (stree->Delete())
         return true;
@@ -333,7 +336,8 @@ bool Manager::DELETE()
         return false;
 }
 
-void Manager::printErrorCode(int n) {				//ERROR CODE PRINT
+void Manager::printErrorCode(int n) //ERROR CODE PRINT
+{
 	flog << "========ERROR========" << endl;
 	flog << n << endl;
 	flog << "=====================" << endl << endl;

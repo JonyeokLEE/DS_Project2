@@ -10,8 +10,12 @@ class SelectionTree
 private:
     SelectionTreeNode* root;
     vector<SelectionTreeNode*> selvector;
-    //vector<int> savedCode;
-    ofstream* fout;
+    //vector to save each node's pointer
+    //(just save its pointer easy to access node)
+    //Using LinkedList with out array
+
+    ofstream* fout; //to write
+
     void destructor(SelectionTreeNode* pCur)
     {
         if (!pCur) return;
@@ -20,11 +24,11 @@ private:
             destructor(pCur->getRightChild());
             destructor(pCur->getLeftChild());
             delete pCur;
-        }
+        } //post-order delete
     }
     void CallDestructor()
     {
-        destructor(root);
+        destructor(root); //started from root
     }
 
 public:
@@ -42,14 +46,14 @@ public:
 
     void setRoot(SelectionTreeNode* pN) { this->root = pN; }
     SelectionTreeNode* getRoot() { return root; }
+    //function to set and get root
 
-    void settingSelection();
-    void SelectionUp();
+    void settingSelection(); //create selection tree form
 
-    bool Insert(LoanBookData* newData);
-    bool Delete();
-    //void LevelOrderPrint();
-    //void vectorPrint();
-    //void vectorPrintEach(int code);
-    bool printBookData(int bookCode);
+    void SelectionUp(); //rearrange SelectionTree from down to up
+
+    bool Insert(LoanBookData* newData); //insert
+    bool Delete(); //delete
+
+    bool printBookData(int bookCode); //print st
 };

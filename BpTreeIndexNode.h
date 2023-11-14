@@ -14,15 +14,18 @@ public:
 	};
 
 
-	void insertIndexMap(string name, BpTreeNode* pN) {
+	void insertIndexMap(string name, BpTreeNode* pN) //to insert index map
+	{
 		mapIndex.insert(map<string, BpTreeNode*>::value_type(name, pN));
 	}
 
-	void deleteMap(string name) {
+	void deleteMap(string name) //to delete index map
+	{
 		mapIndex.erase(name);
 	}
 
 	map <string, BpTreeNode*>* getIndexMap() { return &mapIndex; }
+	//to get index map
 
 };
 

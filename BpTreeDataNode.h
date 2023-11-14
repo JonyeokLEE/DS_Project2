@@ -6,7 +6,7 @@
 class BpTreeDataNode : public BpTreeNode
 {
 private:
-	map <string, LoanBookData*> mapData;
+	map <string, LoanBookData*> mapData; //data map
 	BpTreeNode* pNext;
 	BpTreeNode* pPrev;
 public:
@@ -22,15 +22,19 @@ public:
 	void setPrev(BpTreeNode* pN) { pPrev = pN; }
 	BpTreeNode* getNext() { return pNext; }
 	BpTreeNode* getPrev() { return pPrev; }
+	//to set and get their relationship
 
-	void insertDataMap(string name, LoanBookData* pN) {
+	void insertDataMap(string name, LoanBookData* pN) //insert datamap
+	{
 		mapData.insert(map<string, LoanBookData*>::value_type(name, pN));
 	}
 
-	void deleteMap(string name) {
+	void deleteMap(string name) //delete datamap
+	{
 		mapData.erase(name);
 	}
 	map<string, LoanBookData*>* getDataMap() { return &mapData; }
+	//to get data map
 };
 
 #endif

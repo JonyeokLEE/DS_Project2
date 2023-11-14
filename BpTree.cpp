@@ -1,41 +1,41 @@
 #include "BpTree.h"
 
-bool BpTree::Insert(LoanBookData* newData) {
-
-	if (!root)
+bool BpTree::Insert(LoanBookData* newData) //INSERT
+{
+	if (!root) //there is not any node in BpTree
 	{
 		BpTreeNode* firstNode = new BpTreeDataNode();
-		firstNode->insertDataMap(newData->getName(), newData);
-		root = firstNode;
-		insertCount++;
+		firstNode->insertDataMap(newData->getName(), newData); //insert
+		root = firstNode; //set root
+		insertCount++; //update count
 		return true;
 	}
-	if (searchExistence(newData->getName()))
+	if (searchExistence(newData->getName())) //if there is Node which is same with New Node
 	{
 		return true;
 	}
 	else
 	{
-		if (insertCount > 1) {
-
-			BpTreeNode* StartPoint = searchDataNode(newData->getName());
-			StartPoint->insertDataMap(newData->getName(), newData);
-			insertCount++;
-			if (excessDataNode(StartPoint))
+		if (insertCount > 1) //if entered nodes are two
+		{
+			BpTreeNode* StartPoint = searchDataNode(newData->getName()); //search location of DataNode
+			StartPoint->insertDataMap(newData->getName(), newData); //insert that place
+			insertCount++; //update count
+			if (excessDataNode(StartPoint)) //if to split data node
 			{
-				splitDataNode(StartPoint);
-				StartPoint = StartPoint->getParent();
-				while (excessIndexNode(StartPoint))
+				splitDataNode(StartPoint); //split data node
+				StartPoint = StartPoint->getParent(); //go to parent
+				while (excessIndexNode(StartPoint)) //split index node until it is okay
 				{
-					splitIndexNode(StartPoint);
-					StartPoint = StartPoint->getParent();
+					splitIndexNode(StartPoint); //split index node
+					StartPoint = StartPoint->getParent(); //go to parent
 				}
 			}
 		}
-		else
+		else //if entered node is one
 		{
-			root->insertDataMap(newData->getName(), newData);
-			insertCount++;
+			root->insertDataMap(newData->getName(), newData); //just insert to data node
+			insertCount++; //update count
 		}
 		return true;
 	}
@@ -52,71 +52,88 @@ bool BpTree::excessIndexNode(BpTreeNode* pIndexNode) {
 	else return false;
 }
 
-void BpTree::splitDataNode(BpTreeNode* pDataNode) {
+void BpTree::splitDataNode(BpTreeNode* pDataNode) //function to split data node
+{
 	BpTreeNode* rootParent = new BpTreeIndexNode();
-	BpTreeNode* SplitParent = new BpTreeIndexNode();
-	if (pDataNode == root)
+	BpTreeNode* SplitParent = new BpTreeIndexNode(); //splited node's parent
+	if (pDataNode == root) //if this datanode is root
 	{
-		rootParent->setMostLeftChild(pDataNode);
+		rootParent->setMostLeftChild(pDataNode); //create parent
 		pDataNode->setParent(rootParent);
-		root = rootParent;
+		root = rootParent; //update root
+	}
+	else //else
+	{
+		delete rootParent; //just delete
 	}
 
-	auto p = (pDataNode->getDataMap()->begin());
-	auto BeParent = ++(pDataNode->getDataMap()->begin());
-	auto q = (pDataNode->getDataMap()->rbegin());
+	auto p = (pDataNode->getDataMap()->begin()); //p
+	auto BeParent = ++(pDataNode->getDataMap()->begin()); //Map to be parent
+	auto q = (pDataNode->getDataMap()->rbegin()); //q
 
 	BpTreeNode* qNode = new BpTreeDataNode();
 	qNode->insertDataMap(q->first, q->second);
 	qNode->insertDataMap(BeParent->first, BeParent->second);
-	SplitParent = pDataNode->getParent();
-	SplitParent->insertIndexMap(BeParent->first, qNode);
-	qNode->setParent(SplitParent);
-	if (pDataNode->getNext() != nullptr)
+	//create qNode and insert BeParent and q
+
+	SplitParent = pDataNode->getParent(); //SplitParent is splited node's parent
+	SplitParent->insertIndexMap(BeParent->first, qNode); //insert Index Map
+	qNode->setParent(SplitParent); //set parent
+
+	if (pDataNode->getNext() != nullptr) //if pDataNode has next Node before
 	{
 		pDataNode->getNext()->setPrev(qNode);
 		qNode->setNext(pDataNode->getNext());
 	}
 	pDataNode->setNext(qNode);
 	qNode->setPrev(pDataNode);
+	//set there relationship
 
 	pDataNode->deleteMap(BeParent->first);
-	pDataNode->deleteMap(q->first);
+	pDataNode->deleteMap(q->first); //delete data of BeParent and q in pDataNode
 }
 
-void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
-	BpTreeNode* rootParent = new BpTreeIndexNode();
-	BpTreeNode* SplitParent = new BpTreeIndexNode();
-	if (pIndexNode == root)
+void BpTree::splitIndexNode(BpTreeNode* pIndexNode) //function to split index node
+{
+	BpTreeNode* rootParent = new BpTreeIndexNode(); //root's parent
+	BpTreeNode* SplitParent = new BpTreeIndexNode(); //splited node's parent
+
+	if (pIndexNode == root) //if splited index node is root
 	{
 		rootParent->setMostLeftChild(pIndexNode);
 		pIndexNode->setParent(rootParent);
 		root = rootParent;
 	}
+	else //else
+	{
+		delete rootParent; //just delete
+	}
 
 	auto p = (pIndexNode->getIndexMap()->begin());
 	auto BeParent = ++(pIndexNode->getIndexMap()->begin());
-	auto q = (pIndexNode->getIndexMap()->rbegin());
+	auto q = (pIndexNode->getIndexMap()->rbegin()); //set Map like splitdatanode fuction
 
-	BpTreeNode* qNode = new BpTreeIndexNode();
+	BpTreeNode* qNode = new BpTreeIndexNode(); //make qNode and insert data
 	qNode->setMostLeftChild(BeParent->second);
 	qNode->insertIndexMap(q->first, q->second);
+
 	SplitParent = pIndexNode->getParent();
 	SplitParent->insertIndexMap(BeParent->first, qNode);
 	BeParent->second->setParent(qNode);
 	q->second->setParent(qNode);
 	qNode->setParent(SplitParent);
+	//set their relationship
 
 	pIndexNode->deleteMap(BeParent->first);
-	pIndexNode->deleteMap(q->first);
+	pIndexNode->deleteMap(q->first); //delete data
 }
 
-BpTreeNode* BpTree::searchDataNode(string name) {
-	BpTreeNode* pCur = root;
-
+BpTreeNode* BpTree::searchDataNode(string name)
+{
+	BpTreeNode* pCur = root; //start from root
 	string toFind = name;
 
-	while (pCur->getMostLeftChild())
+	while (pCur->getMostLeftChild()) //find the way until datanode
 	{
 		if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
 		{
@@ -148,18 +165,18 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 			}
 		}
 	}
-	return pCur;
+	return pCur; //return this datanode
 }
 
-bool BpTree::searchExistence(string name) {
+bool BpTree::searchExistence(string name) //function to know there alredy exists node with name?
+{
 	if (!root)
 		return false;
 
-	BpTreeNode* pCur = root;
-
+	BpTreeNode* pCur = root; //starting point
 	string toFind = name;
 
-	while (pCur->getMostLeftChild())
+	while (pCur->getMostLeftChild()) //find the way until datanode
 	{
 
 		if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
@@ -192,13 +209,13 @@ bool BpTree::searchExistence(string name) {
 			}
 		}
 	}
-	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end())
+	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end()) //fail to find
 	{
 		return false;
 	}
-	else
+	else //already exist?
 	{
-		pCur->getDataMap()->find(name)->second->updateCount();
+		pCur->getDataMap()->find(name)->second->updateCount(); //just update count
 		return true;
 	}
 }
@@ -211,7 +228,7 @@ bool BpTree::searchBook(string name) {
 
 	string toFind = name;
 
-	while (pCur->getMostLeftChild())
+	while (pCur->getMostLeftChild()) //find the way until datanode
 	{
 
 		if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
@@ -245,21 +262,21 @@ bool BpTree::searchBook(string name) {
 		}
 	}
 
-	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end())
+	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end()) //fail to find
 	{
 		*fout << "========ERROR========" << endl;
 		*fout << "300" << endl;
 		*fout << "=====================" << endl << endl;
 		return false;
 	}
-	else if (pCur->getDataMap()->find(name)->second->getLoanCount() == -1)
+	else if (pCur->getDataMap()->find(name)->second->getLoanCount() == -1) //if node is alreay deleted
 	{
 		*fout << "========ERROR========" << endl;
 		*fout << "300" << endl;
 		*fout << "=====================" << endl << endl;
 		return false;
 	}
-	else
+	else //find
 	{
 		*fout << "========SEARCH_BP========" << endl;
 		pCur->getDataMap()->find(name)->second->PrintData(*fout);
@@ -277,8 +294,10 @@ bool BpTree::searchRange(string start, string end) {
 
 	string toFind = start;
 	string toEnd = end;
+	char change = end[0] + 1;
+	toEnd.append(1, change);
 
-	while (pCur->getMostLeftChild())
+	while (pCur->getMostLeftChild()) //find the way until datanode with starting point
 	{
 
 		if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
@@ -312,33 +331,35 @@ bool BpTree::searchRange(string start, string end) {
 		}
 	}
 	int count = 0;
-	auto save = pCur->getDataMap()->begin();
+
+	auto save = pCur->getDataMap()->begin(); //starting point
+
 	BpTreeNode* CurrentNode = pCur;
-	while (CurrentNode)
+	while (CurrentNode) //traversal datanode
 	{
-		if (save->first >= toFind)
+		if (save->first >= toFind) //if it is in range?
 		{
-			if (save->first > toEnd)
+			if (save->first.front() >= toEnd.at(toEnd.size()-1)) //out of range
 				break;
-			else
+			else //in range
 			{
-				if (save->second->getLoanCount() != -1)
+				if (save->second->getLoanCount() != -1) //and it is not deleted
 				{
-					SaveToPrint.push_back(save->second);
+					SaveToPrint.push_back(save->second); //save to vector
 				}
-				count++;
+				count++; //update count
 			}
 		}
-		save++;
-		if (CurrentNode->getDataMap()->end() == save)
+		save++; //to next map
+		if (CurrentNode->getDataMap()->end() == save) //if it is end
 		{
-			CurrentNode = CurrentNode->getNext();
-			if (!CurrentNode) break;
-			save = CurrentNode->getDataMap()->begin();
+			CurrentNode = CurrentNode->getNext(); //move to next node
+			if (!CurrentNode) break; //there is no node -> break
+			save = CurrentNode->getDataMap()->begin(); //begin at its starting point
 
 		}
 	}
-	if (count == 0)
+	if (count == 0) //there is no data in this range
 	{
 		*fout << "========ERROR========" << endl;
 		*fout << "300" << endl;
@@ -356,16 +377,16 @@ bool BpTree::searchRange(string start, string end) {
 			}
 		}
 		*fout << "==========================" << endl << endl;
-		SaveToPrint.clear();
+		SaveToPrint.clear(); //clear vector (for next time)
 		return true;
 	}
 }
-bool BpTree::printAll()
+bool BpTree::printAll() //Print all data in bptree
 {
 	if (!root)
 		return false;
 	BpTreeNode* pCur = root;
-	while (pCur->getMostLeftChild())
+	while (pCur->getMostLeftChild()) //just get to most left data node
 	{
 
 		pCur = pCur->getMostLeftChild(); // p = A0
@@ -373,7 +394,7 @@ bool BpTree::printAll()
 	int count = 0;
 	auto save = pCur->getDataMap()->begin();
 	BpTreeNode* CurrentNode = pCur;
-	while (CurrentNode)
+	while (CurrentNode) //same with search range
 	{
 		if (save->second->getLoanCount() != -1)
 		{
@@ -387,8 +408,9 @@ bool BpTree::printAll()
 			if (!CurrentNode) break;
 			save = CurrentNode->getDataMap()->begin();
 		}
+		//store data in vector
 	}
-	if (count == 0)
+	if (count == 0) //noting to print
 	{
 		*fout << "========ERROR========" << endl;
 		*fout << "400" << endl;
@@ -403,7 +425,7 @@ bool BpTree::printAll()
 			SaveToPrint.at(i)->PrintData(*fout);
 		}
 		*fout << "==========================" << endl << endl;
-		SaveToPrint.clear();
+		SaveToPrint.clear(); //clear vector for next time
 		return true;
 	}
 }
@@ -416,7 +438,7 @@ bool BpTree::deleteBook(string name)
 
 	string toFind = name;
 
-	while (pCur->getMostLeftChild())
+	while (pCur->getMostLeftChild()) //find the way until datanode
 	{
 
 		if (pCur->getIndexMap()->size() == 2) // A0 [(K1,A1) , (K2,A2)] 
@@ -450,13 +472,13 @@ bool BpTree::deleteBook(string name)
 		}
 	}
 
-	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end())
+	if (pCur->getDataMap()->find(name) == pCur->getDataMap()->end()) //there is no datanode which is i find
 	{
 		return false;
 	}
 	else
 	{
-		pCur->getDataMap()->find(name)->second->DeleteCount();
+		pCur->getDataMap()->find(name)->second->DeleteCount(); //delete count
 		return true;
 	}
 }

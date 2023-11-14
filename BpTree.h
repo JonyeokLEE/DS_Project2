@@ -10,66 +10,48 @@
 
 class BpTree {
 private:
-	BpTreeNode* root;
+	BpTreeNode* root; //root pointer
 	int			order;		// m children
-	ofstream* fout;
-	int insertCount;
-	vector<LoanBookData*> SaveToPrint;
-	void destructor(BpTreeNode* pCur)
-	{
-		if (!pCur) return;
-		else
-		{
-			if (pCur->getMostLeftChild())
-			{
-				destructor(pCur->getMostLeftChild());
-				if ((pCur->getIndexMap()->begin()->second))
-				{
-					destructor(pCur->getIndexMap()->begin()->second);
-				}
-				if (pCur->getIndexMap()->rbegin()->second)
-				{
-					destructor(pCur->getIndexMap()->rbegin()->second);
-				}
-			}
-			else return;
-			delete pCur;
-		}
-	}
+	ofstream* fout; //to write
+	int insertCount; //to know it has only 
+	vector<LoanBookData*> SaveToPrint; //to use when PRINT_BP_RANGE
 
 public:
-	BpTree() {
+	BpTree()
+	{
 		root = NULL;
 		this->order = 3;
 		this->fout = nullptr;
 		this->insertCount = 0;
 	}
-	BpTree(ofstream *fout, int order = 3) {
+	BpTree(ofstream *fout, int order = 3) //constructor
+	{
 		root = NULL;
 		this->order = order;
 		this->fout = fout;
 		this->insertCount = 0;
 	}
-	~BpTree()
+	~BpTree() //destructor
 	{
-		//destructor(root);
 	}
 	/* essential */
-	bool		Insert(LoanBookData* newData);
+	bool		Insert(LoanBookData* newData); //insert new Node
 	bool		excessDataNode(BpTreeNode* pDataNode);
 	bool		excessIndexNode(BpTreeNode* pIndexNode);
 	void		splitDataNode(BpTreeNode* pDataNode);
 	void		splitIndexNode(BpTreeNode* pIndexNode);
 	BpTreeNode* getRoot() { return root; }
+
+	//search function
 	BpTreeNode* searchDataNode(string name);
-
 	bool searchExistence(string name);
-
 	bool searchBook(string name);
 	bool searchRange(string start, string end);
 
+	//to Print All Data
 	bool printAll();
 
+	//DELETE
 	bool deleteBook(string name);
 	
 };

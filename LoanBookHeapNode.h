@@ -24,9 +24,9 @@ public:
     void setLeftChild(LoanBookHeapNode* pL) { this->pLeft = pL; }
     void setRightChild(LoanBookHeapNode* pR) { this->pRight = pR; }
     void setParent(LoanBookHeapNode* pP) { this->pParent = pP; }
-
     LoanBookData* getBookData() { return pData; }
     LoanBookHeapNode* getLeftChild() { return pLeft; }
     LoanBookHeapNode* getRightChild() { return pRight; }
     LoanBookHeapNode* getParent() { return pParent; }
+    //function to set and get member variable
 };

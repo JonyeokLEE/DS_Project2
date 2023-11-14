@@ -19,10 +19,11 @@ public:
 
 	void setMostLeftChild(BpTreeNode* pN) { pMostLeftChild = pN; }
 	void setParent(BpTreeNode* pN) { pParent = pN; }
-
 	BpTreeNode* getParent() { return pParent; }
 	BpTreeNode* getMostLeftChild() { return pMostLeftChild; }
+	//to get and set their relationship
 
+	//declare virtual function
 	virtual void setNext(BpTreeNode* pN) {}
 	virtual void setPrev(BpTreeNode* pN) {}
 	virtual BpTreeNode* getNext() { return NULL; }
