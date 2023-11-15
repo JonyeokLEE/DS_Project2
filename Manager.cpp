@@ -261,25 +261,25 @@ bool Manager::SEARCH_BP(string ToSearch) //SEARCH_BP command
 {
     string line = ToSearch;
     bool success = false;
-    int SpaceCount = 0;
-    SpaceCount = count(line.begin(), line.end(), '\t');
-    if (SpaceCount == 0)
+    vector<string> result; //to store the values into vector array
+    stringstream ss(line);
+    string temp;
+
+    while (getline(ss, temp, '\t')) //seperate values on the basis of tab
     {
-        success = SEARCH_BP_BOOK(ToSearch); //run SEARCH_BP_BOOK
+        result.push_back(temp);
     }
-    else if (SpaceCount == 1) //if there is two parameter in command
+
+    if (result.size() > 3) //if number of value is not 3
     {
-        vector<string> result; //to store the values into vector array
-        stringstream ss(line);
-        string temp;
-        while (getline(ss, temp, '\t'))
-        {
-            result.push_back(temp);
-        }
-        if (result.size() != 2) //if number of value is not 2
-        {
-            return false;
-        }
+        return false;
+    }
+    if (result.size() == 1)
+    {
+        success = SEARCH_BP_BOOK(line); //run SEARCH_BP_BOOK
+    }
+    else if (result.size() == 2) //if there is two parameter in command
+    {
         string start = result[0];
         string end = result[1];
         success = SEARCH_BP_RANGE(start, end); //run SEARCH_BP_RANGE
