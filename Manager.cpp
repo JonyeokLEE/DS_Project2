@@ -329,7 +329,7 @@ bool Manager::PRINT_ST(int CodeToFind) //PRINT_ST command
 }
 
 bool Manager::DELETE() //DELETE command
-{
+{   
     if (stree->Delete())
         return true;
     else
