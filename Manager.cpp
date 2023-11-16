@@ -27,7 +27,7 @@ void Manager::run(const char* command)
 	fin.open(command); //open Command File
 	if(!fin) //if fail to open
 	{
-		flog << "File Open Error" << endl;
+        printErrorCode(100);
 		return;
 	}
     string cmd;
